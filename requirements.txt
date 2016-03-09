@@ -1,0 +1,3 @@
+python-rapidjson==0.0.6
+geojson==1.3.2
+-e git+git://github.com/EditLLC/python-montage.git@feature/v2#egg=montage
