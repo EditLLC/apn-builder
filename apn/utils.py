@@ -24,7 +24,7 @@ def convert_geometry(geometry):
         if polygon is not None:
             results.append(polygon)
 
-    elif feature['geometry']['type'] == 'MultiPolygon':
+    elif geometry['type'] == 'MultiPolygon':
         for coords in geometry['coordinates']:
             polygon = build_polygon(coords)
             if polygon is not None:
