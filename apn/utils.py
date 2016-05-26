@@ -57,7 +57,7 @@ def shp_to_geojson(shapefile):
     jsonfile = Path('{0}.geojson'.format(shapefile[:-len(shapefile.ext)]))
     command = 'ogr2ogr -f GeoJSON -t_srs crs:84 {geojson} {shape}'
     run(command.format(geojson=jsonfile, shape=shapefile))
-    return geojson_file
+    return jsonfile
 
 
 def upload(data):
