@@ -29,6 +29,8 @@ def build_documents(data):
             'county': 'Merced',
             'boundary': convert_geometry(feature['geometry'])
         }
+        if not document['boundary']:
+            continue
         yield document
 
 

@@ -19,12 +19,14 @@ def build_polygon(coords):
 
 def convert_geometry(geometry):
     results = []
-    if geometry['type'] == 'Polygon':
+    if geometry is None:
+        pass
+    elif geometry['type'] == 'Polygon':
         polygon = build_polygon(geometry['coordinates'])
         if polygon is not None:
             results.append(polygon)
 
-    elif feature['geometry']['type'] == 'MultiPolygon':
+    elif geometry['type'] == 'MultiPolygon':
         for coords in geometry['coordinates']:
             polygon = build_polygon(coords)
             if polygon is not None:
