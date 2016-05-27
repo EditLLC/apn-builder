@@ -27,6 +27,7 @@ def build_documents(data):
             'apn': apn,
             'state': 'CA',
             'county': 'Merced',
+            'year': 2015,
             'boundary': convert_geometry(feature['geometry'])
         }
         if not document['boundary']:
