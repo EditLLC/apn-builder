@@ -6,6 +6,7 @@ import montage
 import requests
 from invoke import run
 from unipath import Path
+from multiprocessing.dummy import Pool
 
 DATA_DIR = Path(Path(__file__).absolute().ancestor(2), 'data')
 
@@ -63,20 +64,32 @@ def shp_to_geojson(shapefile):
 
 
 def upload(data):
-    client = montage.Client('apn-builder', os.environ.get('MONTAGE_TOKEN'))
-    batch = []
+    def worker(doc):
+        client = montage.Client('apn-builder', os.environ.get('MONTAGE_TOKEN'))
 
-    for index, document in enumerate(data):
-        batch.append(document)
+        query = montage.Query('apn').get_all(doc['apn'], index='apn').filter(
+            montage.Field('county') == doc['county'],
+            montage.Field('state') == doc['state'],
+            montage.Field('year') == doc['year'],
+        ).count()
 
-        if len(batch) >= 200:
-            client.documents.save('apn', *batch)
-            batch = []
+        response = client.execute(query=query)
+        # debug
+        import code
+        code.interact(local=locals())
+        exit()
 
-        print("{doc[county]}, {doc[state]}: {doc[apn]} ({index})".format(
-            index=index,
-            doc=document,
-        ))
+        # TODO:
+        # Check if the APN exists
+        # If it exists, move on. Otherwise, save it
+        # add batch to save
+        # update worker
+        # return list of what needs to be saved; batch list and save
 
-    if batch:
-        client.documents.save('apn', *batch)
+        if response["query"] == 0:
+            print("{doc[county]}, {doc[state]}: {doc[apn]}".format(
+                doc=doc,
+            ))
+            client.documents.save('apn', doc)
+    pool = Pool(processes=10)
+    docs = pool.map(worker, data)
