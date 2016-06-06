@@ -74,22 +74,26 @@ def upload(data):
         ).count()
 
         response = client.execute(query=query)
-        # debug
-        # import code
-        # code.interact(local=locals())
-        # exit()
 
-        # TODO:
-        # Check if the APN exists
-        # If it exists, move on. Otherwise, save it
-        # add batch to save
-        # update worker
-        # return list of what needs to be saved; batch list and save
-
+        message = "[{status}] {doc[county]}, {doc[state]}: {doc[apn]}"
         if response['data']['query'] == 0:
-            print("{doc[county]}, {doc[state]}: {doc[apn]}".format(
-                doc=doc,
-            ))
-            client.documents.save('apn', doc)
+            print(message.format(status='save', doc=doc))
+            return doc
+        else:
+            print(message.format(status='dupe', doc=doc))
+
+    client = montage.Client('apn-builder', os.environ.get('MONTAGE_TOKEN'))
+
     pool = Pool(processes=10)
-    docs = pool.map(worker, data)
+    docs = pool.imap(worker, data)
+
+    batch = []
+    for doc in (doc for doc in docs if doc is not None):
+        batch.append(doc)
+        if len(batch) >= 200:
+            print('Saving batch...')
+            client.documents.save('apn', *batch)
+            batch = []
+    if batch:
+        print('Saving batch...')
+        client.documents.save('apn', *batch)
