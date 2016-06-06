@@ -75,9 +75,9 @@ def upload(data):
 
         response = client.execute(query=query)
         # debug
-        import code
-        code.interact(local=locals())
-        exit()
+        # import code
+        # code.interact(local=locals())
+        # exit()
 
         # TODO:
         # Check if the APN exists
@@ -86,7 +86,7 @@ def upload(data):
         # update worker
         # return list of what needs to be saved; batch list and save
 
-        if response["query"] == 0:
+        if response['data']['query'] == 0:
             print("{doc[county]}, {doc[state]}: {doc[apn]}".format(
                 doc=doc,
             ))
