@@ -27,6 +27,7 @@ def build_documents(data):
             'apn': apn,
             'state': 'CA',
             'county': 'Fresno',
+            'year': 2016,
             'boundary': convert_geometry(feature['geometry'])
         }
         yield document
