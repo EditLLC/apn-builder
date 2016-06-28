@@ -7,7 +7,7 @@ assessor@madera-county.com
 import invoke
 import rapidjson
 from unipath import Path
-from .utils import DATA_DIR, build_polygon, convert_geometry, download, unpack, shp_to_geojson, upload
+from .utils import DATA_DIR, build_polygon, normalize, convert_geometry, download, unpack, shp_to_geojson, upload
 
 
 DATASET_URL = 'https://www.dropbox.com/s/euib3xnhw5w03aa/Madera_2016-03-15.zip?dl=1'
@@ -21,10 +21,8 @@ def build_documents(data):
         apn = feature['properties']['Parcel']
         if apn is None:
             continue
-        input_apn = apn
-        apn = input_apn.replace('-', '')
         document = {
-            'apn': apn,
+            'apn': normalize(apn),
             'state': 'CA',
             'county': 'Madera',
             'year': 2015,
