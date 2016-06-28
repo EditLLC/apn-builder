@@ -36,6 +36,12 @@ def convert_geometry(geometry):
     return results
 
 
+def normalize(apn):
+    input_apn = apn
+    apn = input_apn.replace('-', '')
+    return apn
+
+
 def download(url, filename):
     response = requests.get(url, stream=True)
     local_file = Path(DATA_DIR, filename)
