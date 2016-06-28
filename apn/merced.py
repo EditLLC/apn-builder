@@ -9,7 +9,7 @@ Assessor's Office
 import invoke
 import rapidjson
 from unipath import Path
-from .utils import DATA_DIR, build_polygon, convert_geometry, download, unpack, shp_to_geojson, upload
+from .utils import DATA_DIR, build_polygon, normalize, convert_geometry, download, unpack, shp_to_geojson, upload
 
 
 DATASET_URL = 'https://www.dropbox.com/s/mk7bb9symdume5c/Merced_2016-03-17.zip?dl=1'
@@ -24,7 +24,7 @@ def build_documents(data):
         if apn is None:
             continue
         document = {
-            'apn': apn,
+            'apn': normalize(apn),
             'state': 'CA',
             'county': 'Merced',
             'year': 2015,
