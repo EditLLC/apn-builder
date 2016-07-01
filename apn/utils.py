@@ -4,11 +4,17 @@ import zipfile
 import geojson
 import montage
 import requests
+import re
+
 from invoke import run
 from unipath import Path
 from multiprocessing.dummy import Pool
 
 DATA_DIR = Path(Path(__file__).absolute().ancestor(2), 'data')
+
+# Compile the regex for efficiency.
+# Match all non-alphanumeric characters.
+apn_re = re.compile(r'[^a-zA-Z0-9]+')
 
 
 def build_polygon(coords):
@@ -32,8 +38,11 @@ def convert_geometry(geometry):
             polygon = build_polygon(coords)
             if polygon is not None:
                 results.append(polygon)
-
     return results
+
+
+def normalize(apn):
+    return apn_re.sub('', apn)
 
 
 def download(url, filename):
