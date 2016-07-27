@@ -43,10 +43,10 @@ def stanislaus():
     if not local_data.exists():
         unpack(local_archive)
 
-    geojson_file = Path(local_data, 'Stanislaus_Parcels.geojson')
+    geojson_file = Path(local_data, 'parcels.geojson')
 
     if not geojson_file.exists():
-        shp_to_geojson(Path(local_data, 'Stanislaus_Parcels.shp'))
+        shp_to_geojson(Path(local_data, 'parcels.shp'))
 
     data = rapidjson.loads(open(geojson_file, 'r').read())
     upload(build_documents(data))
