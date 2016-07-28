@@ -23,8 +23,11 @@ def build_documents(data):
         apn = feature['properties']['APN']
         if apn is None:
             continue
+        apn = normalize(apn)
+        if not apn:
+            continue
         document = {
-            'apn': normalize(apn),
+            'apn': apn,
             'state': 'CA',
             'county': 'Stanislaus',
             'year': 2016,
