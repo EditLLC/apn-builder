@@ -1,10 +1,12 @@
+import code
 import os
+import re
+import sys
 import zipfile
 
 import geojson
 import montage
 import requests
-import re
 
 from invoke import run
 from unipath import Path
@@ -91,6 +93,15 @@ def upload(data):
         else:
             print(message.format(status='dupe', doc=doc))
 
+    def save(client, batch):
+        try:
+            print('Saving batch of {0}...'.format(len(batch)))
+            return client.documents.save('apn', *batch)
+        except Exception as err:
+            print('Error:', err)
+            code.interact(local=locals())
+            sys.exit()
+
     client = montage.Client('apn-builder', os.environ.get('MONTAGE_TOKEN'))
 
     pool = Pool(processes=10)
@@ -100,9 +111,7 @@ def upload(data):
     for doc in (doc for doc in docs if doc is not None):
         batch.append(doc)
         if len(batch) >= 200:
-            print('Saving batch...')
-            client.documents.save('apn', *batch)
+            save(client, None)
             batch = []
     if batch:
-        print('Saving batch...')
-        client.documents.save('apn', *batch)
+        save(client, batch)
